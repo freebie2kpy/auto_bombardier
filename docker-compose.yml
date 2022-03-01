@@ -1,0 +1,13 @@
+services:
+  bombardier:
+    image: alpine/bombardier
+    environment:
+
+    restart: unless-stopped
+  opera-vpn-eu:
+    image: yarmak/opera-proxy
+    restart: unless-stopped
+    ports:
+      - 18080:18080
+    environment:
+      COUNTRY: 'EU'

