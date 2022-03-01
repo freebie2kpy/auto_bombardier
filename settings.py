@@ -1,1 +1,3 @@
 CONNECTIONS = 20
+URLS = []
+LIMIT = 10
