@@ -1,3 +1,3 @@
 CONNECTIONS = 20
-URLS = []
+URLS = open('url_list.txt', 'rb').readlines()
 LIMIT = 10

